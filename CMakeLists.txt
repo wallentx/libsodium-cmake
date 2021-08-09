@@ -6,6 +6,7 @@ endif()
 
 project("sodium")
 
+option(SODIUM_PCH "Enable PCH support" OFF)
 option(SODIUM_DISABLE_TESTS "Disable tests" OFF)
 option(SODIUM_MINIMAL "Only compile the minimum set of functions required for the high-level API" OFF)
 option(SODIUM_ENABLE_BLOCKING_RANDOM "Enable this switch only if /dev/urandom is totally broken on the target platform" OFF)
@@ -278,6 +279,13 @@ target_compile_definitions(${PROJECT_NAME}
         $<$<BOOL:${SODIUM_ENABLE_BLOCKING_RANDOM}>:USE_BLOCKING_RANDOM>
         $<$<BOOL:${SODIUM_MINIMAL}>:MINIMAL>
 )
+
+if(SODIUM_PCH)
+    target_precompile_headers(${PROJECT_NAME}
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/precomp.h
+    )
+endif()
 
 # Variables that need to be exported to version.h.in
 set(VERSION 1.0.18)
